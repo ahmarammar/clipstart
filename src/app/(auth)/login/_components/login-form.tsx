@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ClipstartLogo, GoogleIcon, FacebookIcon } from "@/components/icons";
-import { PasswordInput } from "./password-input";
+import { PasswordInput } from "../../_components/password-input";
 import { loginSchema, type LoginFormData } from "../_schemas/login.schema";
 import { loginAction } from "@/lib/actions/auth.actions";
 import { cn } from "@/lib/utils";
@@ -138,7 +138,7 @@ export function LoginForm() {
                 id="rememberMe"
                 checked={rememberMe}
                 onCheckedChange={(checked) => setValue("rememberMe", checked === true)}
-                className="h-4 w-4 rounded-sm bg-transparent data-[state=checked]:bg-[#5079F0] border border-[#5079F0]/50 data-[state=checked]:border-[#5079F0]"
+                className="h-4 w-4 rounded-sm bg-transparent data-[state=checked]:bg-[#5079F0] data-[state=checked]:text-white border border-[#5079F0]/50 data-[state=checked]:border-[#5079F0]"
               />
               <Label
                 htmlFor="rememberMe"
@@ -147,9 +147,9 @@ export function LoginForm() {
                 Remember me
               </Label>
             </div>
-            <a href="#" className="text-sm font-normal text-[#5079F0] hover:text-[#5079F0]/80 transition-colors">
+            <Link href="/forgot-password" className="text-sm font-normal text-[#5079F0] hover:text-[#5079F0]/80 transition-colors">
               Forgot password?
-            </a>
+            </Link>
           </div>
         </div>
 

@@ -196,3 +196,98 @@ export async function logoutAction() {
 export async function getSession() {
   return await auth();
 }
+
+export async function forgotPasswordAction(
+  email: string
+): Promise<AuthActionResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      return {
+        success: false,
+        error: data.message || "Failed to send reset link. Please try again.",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    return { success: false, error: "An unexpected error occurred" };
+  }
+}
+
+export async function verifyResetTokenAction(
+  email: string,
+  token: string
+): Promise<AuthActionResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/verify-reset-token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ email, token }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      return {
+        success: false,
+        error: data.message || "Invalid or expired reset link.",
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Verify reset token error:", error);
+    return { success: false, error: "An unexpected error occurred" };
+  }
+}
+
+export async function resetPasswordAction(
+  email: string,
+  token: string,
+  password: string
+): Promise<AuthActionResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        token,
+        password,
+        password_confirmation: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      return {
+        success: false,
+        error: data.message || "Failed to reset password. Please try again.",
+      };
+    }
+
+    return { success: true, redirectTo: "/login" };
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return { success: false, error: "An unexpected error occurred" };
+  }
+}

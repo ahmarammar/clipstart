@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ClipstartLogo, GoogleIcon, FacebookIcon } from "@/components/icons";
-import { PasswordInput } from "./password-input";
+import { PasswordInput } from "../../_components/password-input";
 import { signupSchema, type SignupFormData } from "../_schemas/signup.schema";
 import { signupAction } from "@/lib/actions/auth.actions";
 import { cn } from "@/lib/utils";
