@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,9 +10,13 @@ import { Label } from "@/components/ui/label";
 import { ClipstartLogo, GoogleIcon, FacebookIcon } from "@/components/icons";
 import { PasswordInput } from "./password-input";
 import { signupSchema, type SignupFormData } from "../_schemas/signup.schema";
+import { signupAction } from "@/lib/actions/auth.actions";
 import { cn } from "@/lib/utils";
 
 export function SignupForm() {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -18,6 +24,7 @@ export function SignupForm() {
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -25,8 +32,18 @@ export function SignupForm() {
   });
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log("Form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setServerError(null);
+
+    const result = await signupAction(data.name, data.email, data.password);
+
+    if (!result.success) {
+      setServerError(result.error || "Registration failed");
+      return;
+    }
+
+    if (result.redirectTo) {
+      router.push(result.redirectTo);
+    }
   };
 
   return (
@@ -42,13 +59,33 @@ export function SignupForm() {
         <div className="space-y-0.5">
           <h2 className="text-[1.625rem] font-bold text-white leading-9.75">Create Your Account</h2>
           <p className="text-sm leading-4.5 text-white/70 font-normal">
-            {" "}
             Please enter your information to get started now
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {serverError && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+            <p className="text-sm text-red-500 text-center">{serverError}</p>
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <Label className="text-sm font-medium text-white leading-4">Full Name</Label>
+          <input
+            type="text"
+            placeholder="Enter your full name"
+            autoComplete="name"
+            className={cn(
+              "flex h-10 w-full rounded-[0.625rem] border border-[#2E3A53] bg-[#1A2336] py-3 px-3.5 leading-4 text-sm text-white placeholder:text-white/40 transition-colors disabled:cursor-not-allowed focus:outline-none disabled:opacity-50",
+              errors.name && "border-red-500 focus:border-red-500 focus:ring-red-500"
+            )}
+            {...register("name")}
+          />
+          {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
+        </div>
+
         <div className="space-y-1.5">
           <Label className="text-sm font-medium text-white leading-4">Email</Label>
           <input

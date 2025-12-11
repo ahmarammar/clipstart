@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,9 +11,13 @@ import { Label } from "@/components/ui/label";
 import { ClipstartLogo, GoogleIcon, FacebookIcon } from "@/components/icons";
 import { PasswordInput } from "./password-input";
 import { loginSchema, type LoginFormData } from "../_schemas/login.schema";
+import { loginAction } from "@/lib/actions/auth.actions";
 import { cn } from "@/lib/utils";
 
 export function LoginForm() {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -30,8 +36,18 @@ export function LoginForm() {
   const rememberMe = watch("rememberMe");
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log("Form submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setServerError(null);
+
+    const result = await loginAction(data.email, data.password);
+
+    if (!result.success) {
+      setServerError(result.error || "Login failed");
+      return;
+    }
+
+    if (result.redirectTo) {
+      router.push(result.redirectTo);
+    }
   };
 
   return (
@@ -51,6 +67,12 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {serverError && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+            <p className="text-sm text-red-500 text-center">{serverError}</p>
+          </div>
+        )}
+
         <div className="space-y-1.5">
           <Label className="text-sm font-medium text-white leading-4">Email</Label>
           <input
