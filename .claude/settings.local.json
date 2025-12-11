@@ -5,7 +5,8 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(npm run dev:*)",
       "Bash(npx tsc --noEmit)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm uninstall:*)"
     ]
   }
 }

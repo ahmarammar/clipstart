@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,9 @@ import { cn } from "@/lib/utils";
 export function LoginForm() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [isSocialLoading, setIsSocialLoading] = useState<
+    "google" | "facebook" | null
+  >(null);
 
   const {
     register,
@@ -49,6 +53,34 @@ export function LoginForm() {
       router.push(result.redirectTo);
     }
   };
+
+  // Handle Google login via NextAuth
+  const handleGoogleLogin = async () => {
+    setIsSocialLoading("google");
+    setServerError(null);
+
+    try {
+      await signIn("google", { callbackUrl: "/onboarding" });
+    } catch {
+      setServerError("Google login failed. Please try again.");
+      setIsSocialLoading(null);
+    }
+  };
+
+  // Handle Facebook login via NextAuth
+  const handleFacebookLogin = async () => {
+    setIsSocialLoading("facebook");
+    setServerError(null);
+
+    try {
+      await signIn("facebook", { callbackUrl: "/onboarding" });
+    } catch {
+      setServerError("Facebook login failed. Please try again.");
+      setIsSocialLoading(null);
+    }
+  };
+
+  const isLoading = isSubmitting || isSocialLoading !== null;
 
   return (
     <div className="w-full max-w-116 space-y-7.5 rounded-[1.25rem] shadow-[0_0_1.25rem_0_#2D3A5A61] border border-[#2D3A5A] bg-[linear-gradient(90deg,#101522_100%,#161C2A_0%)] px-5.5 py-6.5">
@@ -123,7 +155,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isLoading}
           className="w-full h-10.25 bg-[#3B82F6] hover:bg-[#3B82F6]/90 text-white font-bold text-base leading-5.25 rounded-[0.625rem] transition-colors"
         >
           {isSubmitting ? "Signing in..." : "Sign In"}
@@ -142,18 +174,22 @@ export function LoginForm() {
           <Button
             type="button"
             variant="outline"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
             className="flex-1 h-11 bg-[#1A2336] hover:bg-[#1A2336]/80 border-[#2E3A53] text-white font-medium text-sm leading-4 rounded-[0.625rem] transition-colors"
           >
             <GoogleIcon className="mr-2.75 h-5 w-5" />
-            Log In with Google
+            {isSocialLoading === "google" ? "Signing in..." : "Log In with Google"}
           </Button>
           <Button
             type="button"
             variant="outline"
+            onClick={handleFacebookLogin}
+            disabled={isLoading}
             className="flex-1 h-11 bg-[#1A2336] hover:bg-[#1A2336]/80 border-[#2E3A53] text-white font-medium text-sm leading-4 rounded-[0.625rem] transition-colors"
           >
             <FacebookIcon className="mr-2.75 h-5 w-5" />
-            Log In with Facebook
+            {isSocialLoading === "facebook" ? "Signing in..." : "Log In with Facebook"}
           </Button>
         </div>
 
