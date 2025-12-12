@@ -16,19 +16,22 @@ type LoginApiResponse = {
   status: boolean;
   message: string;
   data?: {
+    access_token: string;
+    token_type: string;
+    expires_in: number;
     user: {
       id: number;
       name: string;
       email: string;
       role: "clipper" | "business" | null;
     };
-    access_token: string;
   };
 };
 
 export async function loginAction(
   email: string,
-  password: string
+  password: string,
+  rememberMe: boolean = false
 ): Promise<AuthActionResult> {
   try {
     // First, call the backend API directly to validate credentials and get user data
@@ -38,7 +41,7 @@ export async function loginAction(
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember_me: rememberMe }),
     });
 
     const data: LoginApiResponse = await response.json();
@@ -60,6 +63,7 @@ export async function loginAction(
       await signIn("credentials", {
         email,
         password,
+        rememberMe: String(rememberMe),
         redirect: false,
       });
     } catch (signInError) {

@@ -42,7 +42,7 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     setServerError(null);
 
-    const result = await loginAction(data.email, data.password);
+    const result = await loginAction(data.email, data.password, data.rememberMe);
 
     if (!result.success) {
       setServerError(result.error || "Login failed");

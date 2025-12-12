@@ -61,6 +61,7 @@ export const authConfig: NextAuthConfig = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        rememberMe: { label: "Remember Me", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -77,6 +78,7 @@ export const authConfig: NextAuthConfig = {
             body: JSON.stringify({
               email: credentials.email,
               password: credentials.password,
+              remember_me: credentials.rememberMe === "true",
             }),
           });
 

@@ -58,7 +58,7 @@ export function SignupForm() {
     try {
       await signIn("google", { callbackUrl: "/onboarding" });
     } catch {
-      setServerError("Google sign up failed. Please try again.");
+      setServerError("Google log in failed. Please try again.");
       setIsSocialLoading(null);
     }
   };
@@ -71,7 +71,7 @@ export function SignupForm() {
     try {
       await signIn("facebook", { callbackUrl: "/onboarding" });
     } catch {
-      setServerError("Facebook sign up failed. Please try again.");
+      setServerError("Facebook log in failed. Please try again.");
       setIsSocialLoading(null);
     }
   };
@@ -181,7 +181,7 @@ export function SignupForm() {
             className="flex-1 h-11 bg-[#1A2336] hover:bg-[#1A2336]/80 border-[#2E3A53] text-white font-medium text-sm leading-4 rounded-[0.625rem] transition-colors"
           >
             <GoogleIcon className="mr-2.75 h-5 w-5" />
-            {isSocialLoading === "google" ? "Signing up..." : "Sign Up with Google"}
+            {isSocialLoading === "google" ? "Logging in..." : "Log In with Google"}
           </Button>
           <Button
             type="button"
@@ -191,7 +191,7 @@ export function SignupForm() {
             className="flex-1 h-11 bg-[#1A2336] hover:bg-[#1A2336]/80 border-[#2E3A53] text-white font-medium text-sm leading-4 rounded-[0.625rem] transition-colors"
           >
             <FacebookIcon className="mr-2.75 h-5 w-5" />
-            {isSocialLoading === "facebook" ? "Signing up..." : "Sign Up with Facebook"}
+            {isSocialLoading === "facebook" ? "Logging in..." : "Log In with Facebook"}
           </Button>
         </div>
 
