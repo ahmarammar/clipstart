@@ -101,7 +101,7 @@ export function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {serverError && (
           <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-            <p className="text-sm text-red-500 text-center">{serverError}</p>
+            <p className="text-sm text-[#FFBABE] text-center">{serverError}</p>
           </div>
         )}
 
@@ -117,7 +117,7 @@ export function LoginForm() {
             )}
             {...register("email")}
           />
-          {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email.message}</p>}
+          {errors.email && <p className="text-xs text-[#FFBABE] mt-1">{errors.email.message}</p>}
         </div>
 
         <div className="space-y-3">
@@ -129,7 +129,7 @@ export function LoginForm() {
               error={!!errors.password}
               {...register("password")}
             />
-            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-xs text-[#FFBABE] mt-1">{errors.password.message}</p>}
           </div>
 
           <div className="flex items-center justify-between">

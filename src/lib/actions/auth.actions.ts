@@ -295,3 +295,52 @@ export async function resetPasswordAction(
     return { success: false, error: "An unexpected error occurred" };
   }
 }
+
+export type ProfileUpdateResult = {
+  success: boolean;
+  error?: string;
+  data?: {
+    user: {
+      id: number;
+      name: string;
+      email: string;
+      role: string;
+    };
+  };
+};
+
+export async function updateProfileAction(
+  name: string
+): Promise<ProfileUpdateResult> {
+  try {
+    const session = (await auth()) as AuthSession | null;
+
+    if (!session?.accessToken) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const response = await fetch(`${API_URL}/profile/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.status) {
+      return {
+        success: false,
+        error: data.message || "Failed to update profile. Please try again.",
+      };
+    }
+
+    return { success: true, data: data.data };
+  } catch (error) {
+    console.error("Update profile error:", error);
+    return { success: false, error: "An unexpected error occurred" };
+  }
+}

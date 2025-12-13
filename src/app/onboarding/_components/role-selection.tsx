@@ -47,7 +47,7 @@ export function RoleSelection() {
 
       {error && (
         <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 w-full max-w-md">
-          <p className="text-sm text-red-500 text-center">{error}</p>
+          <p className="text-sm text-[#FFBABE] text-center">{error}</p>
         </div>
       )}
 
