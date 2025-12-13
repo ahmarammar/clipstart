@@ -143,6 +143,8 @@ export const authConfig: NextAuthConfig = {
 
         if (result.success && result.data) {
           token.id = String(result.data.user.id);
+          token.name = result.data.user.name; // Use database name
+          token.email = result.data.user.email; // Use database email
           token.role = result.data.user.role;
           // Backend returns "token" for registration, "access_token" for login
           token.accessToken = result.data.token || result.data.access_token;
@@ -162,6 +164,8 @@ export const authConfig: NextAuthConfig = {
 
         if (result.success && result.data) {
           token.id = String(result.data.user.id);
+          token.name = result.data.user.name; // Use database name
+          token.email = result.data.user.email; // Use database email
           token.role = result.data.user.role;
           // Backend returns "token" for registration, "access_token" for login
           token.accessToken = result.data.token || result.data.access_token;
@@ -194,6 +198,9 @@ export const authConfig: NextAuthConfig = {
         user: {
           ...session.user,
           id: token.id as string,
+          // Use database name/email if available (for OAuth users)
+          name: (token.name as string) || session.user?.name,
+          email: (token.email as string) || session.user?.email,
           role: token.role as "clipper" | "business" | null,
           image: token.picture as string | null | undefined,
         },
