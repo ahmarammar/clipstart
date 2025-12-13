@@ -3,7 +3,7 @@ import { AuthFooter } from "../_components/auth-footer";
 
 export default function ForgotPasswordPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 relative z-10">
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
       <ForgotPasswordForm />
       <AuthFooter />
     </main>

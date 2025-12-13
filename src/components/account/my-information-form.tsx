@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useSession } from "next-auth/react";
 import { updateProfileAction } from "@/lib/actions/auth.actions";
 import { useRouter } from "next/navigation";
 
@@ -12,6 +13,7 @@ interface MyInformationFormProps {
 
 export function MyInformationForm({ initialName, email, role }: MyInformationFormProps) {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState(initialName);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -32,6 +34,8 @@ export function MyInformationForm({ initialName, email, role }: MyInformationFor
       if (result.success) {
         setSuccess(true);
         setIsEditingName(false);
+        // Update the session with new name
+        await updateSession({ name });
         router.refresh();
         setTimeout(() => setSuccess(false), 3000);
       } else {

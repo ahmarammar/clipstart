@@ -157,9 +157,14 @@ export const authConfig: NextAuthConfig = {
         return token;
       }
 
-      // Handle session update (e.g., after role assignment)
-      if (trigger === "update" && session?.role) {
-        token.role = session.role;
+      // Handle session update (e.g., after role assignment or profile update)
+      if (trigger === "update" && session) {
+        if (session.role) {
+          token.role = session.role;
+        }
+        if (session.name) {
+          token.name = session.name;
+        }
       }
 
       return token;
