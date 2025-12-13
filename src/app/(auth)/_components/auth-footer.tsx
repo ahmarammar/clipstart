@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function AuthFooter() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 py-6 text-center">
+    <footer className="sticky bottom-0 left-0 right-0 py-6 text-center z-10">
       <p className="text-sm leading-4.5 font-normal text-white/50">
         By signing in, you agree to our{" "}
         <Link href="/terms" className="text-[#5079F0] hover:text-[#5079F0]/80 transition-colors">

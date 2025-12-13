@@ -3,7 +3,7 @@ import { AuthFooter } from "../_components/auth-footer";
 
 export default function SignupPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4">
+    <main className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <SignupForm />
       <AuthFooter />
     </main>

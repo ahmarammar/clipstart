@@ -79,7 +79,7 @@ export function SignupForm() {
   const isLoading = isSubmitting || isSocialLoading !== null;
 
   return (
-    <div className="w-full max-w-116 space-y-7.5 rounded-[1.25rem] shadow-[0_0_1.25rem_0_#2D3A5A61] border border-[#2D3A5A] bg-[linear-gradient(90deg,#101522_100%,#161C2A_0%)] px-5.5 py-6.5">
+    <div className="relative z-20 w-full max-w-116 space-y-7.5 rounded-[1.25rem] shadow-[0_0_1.25rem_0_#2D3A5A61] border border-[#2D3A5A] bg-[linear-gradient(90deg,#101522_100%,#161C2A_0%)] px-5.5 py-6.5">
       <div className="flex flex-col gap-7.5 items-center text-center">
         <div className="flex items-center justify-center gap-2.5">
           <ClipstartLogo className="h-11 w-11" />
