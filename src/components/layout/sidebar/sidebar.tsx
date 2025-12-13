@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { useTransition } from "react";
 import { ClipstartLogo } from "@/components/icons";
 import { SidebarNavItem, type NavItem } from "./sidebar-nav-item";
+import { logoutAction } from "@/lib/actions/auth.actions";
 
 export type SidebarSection = {
   title?: string;
@@ -14,6 +17,14 @@ interface SidebarProps {
 }
 
 export function Sidebar({ sections }: SidebarProps) {
+  const [isPending, startTransition] = useTransition();
+
+  const handleLogout = () => {
+    startTransition(async () => {
+      await logoutAction();
+    });
+  };
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-67 bg-[linear-gradient(190.77deg,#101521_0.22%,#0C101A_51.91%,#0B0F1A_99.78%)] border-r border-white/6 flex flex-col">
       <div className="relative top-6.5 left-8">
@@ -42,6 +53,27 @@ export function Sidebar({ sections }: SidebarProps) {
           </div>
         ))}
       </nav>
+
+      {/* Logout Button */}
+      <div className="absolute bottom-8 left-4.5 w-58">
+        <button
+          onClick={handleLogout}
+          disabled={isPending}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+        >
+          <Image
+            src="/logout.svg"
+            alt="Logout"
+            width={0}
+            height={0}
+            className="w-6 h-6"
+            style={{ filter: "opacity(0.5)" }}
+          />
+          <span className="text-base font-medium">
+            {isPending ? "Logging out..." : "Logout"}
+          </span>
+        </button>
+      </div>
     </aside>
   );
 }
