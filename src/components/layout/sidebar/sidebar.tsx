@@ -37,7 +37,7 @@ export function Sidebar({ sections }: SidebarProps) {
         </Link>
       </div>
 
-      <nav className="absolute top-23 left-4.5 flex-1 space-y-5 max-w-58 overflow-y-auto">
+      <nav className="absolute top-23 left-4.5 flex-1 space-y-5 w-58 overflow-y-auto">
         {sections.map((section, sectionIndex) => (
           <div key={sectionIndex} className="space-y-3">
             {section.title && (
@@ -54,7 +54,6 @@ export function Sidebar({ sections }: SidebarProps) {
         ))}
       </nav>
 
-      {/* Logout Button */}
       <div className="absolute bottom-8 left-4.5 w-58">
         <button
           onClick={handleLogout}
