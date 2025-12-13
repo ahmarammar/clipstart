@@ -22,7 +22,7 @@ export default async function BusinessLayout({ children }: { children: React.Rea
         <div className="sticky top-0 left-67 right-0 z-50">
           <DashboardHeader
             userName={session?.user.name || "User"}
-            userAvatar={null}
+            userAvatar={session?.user.image}
             activeCount={5}
             activeLabel="campaigns"
           />

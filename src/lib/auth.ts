@@ -16,10 +16,11 @@ interface BackendUser {
 }
 
 // Helper function to call backend for social login
+// Backend returns "token" for registration, "access_token" for login
 async function authenticateWithBackend(
   provider: "google" | "facebook",
   token: string
-): Promise<{ success: boolean; data?: { user: { id: number; name: string; email: string; role: string | null }; access_token: string } }> {
+): Promise<{ success: boolean; data?: { user: { id: number; name: string; email: string; role: string | null }; token?: string; access_token?: string } }> {
   const endpoint = provider === "google"
     ? `${API_URL}/auth/google/callback`
     : `${API_URL}/auth/facebook/callback`;
@@ -39,12 +40,14 @@ async function authenticateWithBackend(
     });
 
     const data = await response.json();
+    console.log(`[OAuth Debug] ${provider} backend response:`, JSON.stringify(data, null, 2));
 
     if (!response.ok || !data.status) {
       console.error(`${provider} backend auth failed:`, data);
       return { success: false };
     }
 
+    console.log(`[OAuth Debug] ${provider} returning data.data:`, JSON.stringify(data.data, null, 2));
     return { success: true, data: data.data };
   } catch (error) {
     console.error(`${provider} backend auth error:`, error);
@@ -136,12 +139,20 @@ export const authConfig: NextAuthConfig = {
       // Handle Google OAuth - call backend to get our access token
       if (account?.provider === "google" && account.id_token) {
         const result = await authenticateWithBackend("google", account.id_token);
+        console.log("[OAuth Debug] Google auth result:", JSON.stringify(result, null, 2));
 
         if (result.success && result.data) {
           token.id = String(result.data.user.id);
           token.role = result.data.user.role;
-          token.accessToken = result.data.access_token;
+          // Backend returns "token" for registration, "access_token" for login
+          token.accessToken = result.data.token || result.data.access_token;
+          console.log("[OAuth Debug] Setting token.accessToken:", token.accessToken);
+          // Store OAuth profile picture
+          if (user?.image) {
+            token.picture = user.image;
+          }
         }
+        console.log("[OAuth Debug] Final token after Google auth:", JSON.stringify({ id: token.id, role: token.role, accessToken: token.accessToken }, null, 2));
         return token;
       }
 
@@ -152,7 +163,12 @@ export const authConfig: NextAuthConfig = {
         if (result.success && result.data) {
           token.id = String(result.data.user.id);
           token.role = result.data.user.role;
-          token.accessToken = result.data.access_token;
+          // Backend returns "token" for registration, "access_token" for login
+          token.accessToken = result.data.token || result.data.access_token;
+          // Store OAuth profile picture
+          if (user?.image) {
+            token.picture = user.image;
+          }
         }
         return token;
       }
@@ -172,15 +188,19 @@ export const authConfig: NextAuthConfig = {
 
     async session({ session, token }) {
       // Pass custom token properties to session
-      return {
+      console.log("[OAuth Debug] Session callback - token.accessToken:", token.accessToken);
+      const result = {
         ...session,
         user: {
           ...session.user,
           id: token.id as string,
           role: token.role as "clipper" | "business" | null,
+          image: token.picture as string | null | undefined,
         },
         accessToken: token.accessToken as string,
       };
+      console.log("[OAuth Debug] Session result:", JSON.stringify({ accessToken: result.accessToken, userId: result.user?.id }, null, 2));
+      return result;
     },
 
     async redirect({ url, baseUrl }) {
@@ -213,6 +233,7 @@ export type SessionUser = {
   name: string;
   email: string;
   role: "clipper" | "business" | null;
+  image?: string | null;
 };
 
 export type AuthSession = {
